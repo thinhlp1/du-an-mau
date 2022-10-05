@@ -260,7 +260,6 @@ public class CourseManager extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("QUẢN LÝ KHÓA HỌC");
-        setPreferredSize(new java.awt.Dimension(750, 680));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -369,6 +368,11 @@ public class CourseManager extends javax.swing.JFrame {
         cbbMajor.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cbbMajorItemStateChanged(evt);
+            }
+        });
+        cbbMajor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbbMajorActionPerformed(evt);
             }
         });
         pnlUpdate.add(cbbMajor, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 340, 30));
@@ -502,6 +506,10 @@ public class CourseManager extends javax.swing.JFrame {
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         AppStatus.OPEN_CONTROLLER.closeOpeningWindown();
     }//GEN-LAST:event_formWindowClosing
+
+    private void cbbMajorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbbMajorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbbMajorActionPerformed
 
     /**
      * @param args the command line arguments

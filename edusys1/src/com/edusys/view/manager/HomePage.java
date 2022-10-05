@@ -79,20 +79,20 @@ public class HomePage extends javax.swing.JFrame {
         AppStatus.OPEN_CONTROLLER.openCourseManager();
     }
     
-    public void openEmployeeManager(){
-       AppStatus.OPEN_CONTROLLER.openEmployeeManager();
-    }
-    
-    public void openEmployeeManager(String maNV){
-       AppStatus.OPEN_CONTROLLER.openEmployeeManager(maNV);
-    }
-    
-    public void openLearnerManager(){
-        //new LearnerManager().setVisible(true);
-        ///this.setEnabled(false);
-        AppStatus.OPEN_CONTROLLER.openLearnerManager();
-    }
-    
+//    public void openEmployeeManager(){
+//       AppStatus.OPEN_CONTROLLER.openEmployeeManager();
+//    }
+//    
+//    public void openEmployeeManager(String maNV){
+//       AppStatus.OPEN_CONTROLLER.openEmployeeManager(maNV);
+//    }
+//    
+//    public void openLearnerManager(){
+//        //new LearnerManager().setVisible(true);
+//        ///this.setEnabled(false);
+//        AppStatus.OPEN_CONTROLLER.openLearnerManager();
+//    }
+//    
     public void openMajorManager(){
         AppStatus.OPEN_CONTROLLER.openMajorManager();
     }
@@ -526,7 +526,7 @@ public class HomePage extends javax.swing.JFrame {
     }//GEN-LAST:event_btnChangePassActionPerformed
 
     private void btnLearner2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLearner2ActionPerformed
-      openLearnerManager();
+      //openLearnerManager();
     }//GEN-LAST:event_btnLearner2ActionPerformed
 
     private void btnCourse2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCourse2ActionPerformed
@@ -550,7 +550,7 @@ public class HomePage extends javax.swing.JFrame {
     }//GEN-LAST:event_btnExitActionPerformed
 
     private void btnLearnerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLearnerActionPerformed
-          openLearnerManager();
+        //  openLearnerManager();
     }//GEN-LAST:event_btnLearnerActionPerformed
 
     private void btnCourseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCourseActionPerformed
@@ -582,11 +582,11 @@ public class HomePage extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRevenueActionPerformed
 
     private void btnEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmployeeActionPerformed
-        openEmployeeManager();
+      //  openEmployeeManager();
     }//GEN-LAST:event_btnEmployeeActionPerformed
 
     private void txtUsernameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtUsernameMouseClicked
-      openEmployeeManager(AppStatus.USER.getEmpID());
+    //  openEmployeeManager(AppStatus.USER.getEmpID());
     }//GEN-LAST:event_txtUsernameMouseClicked
 
     private void btnMajor2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMajor2ActionPerformed

@@ -6,9 +6,9 @@
 package com.edusys.helper;
 
 import com.edusys.view.manager.CourseManager;
-import com.edusys.view.manager.EmployeeManager3;
-import com.edusys.view.manager.LearnerManager3;
-import com.edusys.view.manager.MajorManager;
+////import com.edusys.view.manager.EmployeeManager3;
+//import com.edusys.view.manager.LearnerManager3;
+
 import com.edusys.view.manager.StatisticalManager;
 import com.edusys.view.manager.TraineerManager;
 import java.util.ArrayList;
@@ -23,12 +23,12 @@ public class OpenController {
 
     private static List<JFrame> openedWindowns = new ArrayList<>();
 
-    public static void openLearnerManager() {
-        LearnerManager3 learnerManager = new LearnerManager3();
-        learnerManager.setVisible(true);
-        openedWindowns.add(learnerManager);
-        disableOtherWindown();
-    }
+//    public static void openLearnerManager() {
+//        LearnerManager3 learnerManager = new LearnerManager3();
+//        learnerManager.setVisible(true);
+//        openedWindowns.add(learnerManager);
+//        disableOtherWindown();
+//    }
     
      public static void openCourseManager() {
          CourseManager courseManager = new CourseManager();
@@ -44,19 +44,19 @@ public class OpenController {
          disableOtherWindown();
      }
      
-     public static void openEmployeeManager(){
-         EmployeeManager3 employeeManager = new EmployeeManager3();
-         employeeManager.setVisible(true);
-         openedWindowns.add(employeeManager);
-         disableOtherWindown();
-     }
-     
-     public static void openEmployeeManager(String maNV){
-         EmployeeManager3 employeeManager = new EmployeeManager3(maNV);
-         employeeManager.setVisible(true);
-         openedWindowns.add(employeeManager);
-         disableOtherWindown();
-     }
+//     public static void openEmployeeManager(){
+//         EmployeeManager3 employeeManager = new EmployeeManager3();
+//         employeeManager.setVisible(true);
+//         openedWindowns.add(employeeManager);
+//         disableOtherWindown();
+//     }
+//     
+//     public static void openEmployeeManager(String maNV){
+//         EmployeeManager3 employeeManager = new EmployeeManager3(maNV);
+//         employeeManager.setVisible(true);
+//         openedWindowns.add(employeeManager);
+//         disableOtherWindown();
+//     }
      
      
      public static void openStatiscalManager(int index){
@@ -67,10 +67,10 @@ public class OpenController {
      }
      
      public static void openMajorManager(){
-         MajorManager majorManager = new MajorManager();
-         majorManager.setVisible(true);
-         openedWindowns.add(majorManager);
-         disableOtherWindown();
+//        // MajorManager3 majorManager = new MajorManager3();
+//         majorManager.setVisible(true);
+//         openedWindowns.add(majorManager);
+//         disableOtherWindown();
      }
      
      

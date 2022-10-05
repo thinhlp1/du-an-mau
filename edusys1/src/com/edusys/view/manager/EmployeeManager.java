@@ -10,10 +10,8 @@ import com.edusys.helper.DateHelper;
 import com.edusys.helper.DialogHelper;
 import com.edusys.model.Employee;
 import com.edusys.model.Employee;
-import com.raven.dialog.Message;
-import com.raven.main.EdusysApp;
-import com.raven.swing.table.EventAction;
-import com.raven.swing.table.ModelAction;
+
+
 import java.awt.HeadlessException;
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -30,8 +28,7 @@ public class EmployeeManager extends javax.swing.JPanel {
     private EmployeeDAO dao = new EmployeeDAO();
     private DefaultTableModel tblModel;
     private List<Employee> listAllEmployee;
-    private ModelAction data;
-    EventAction eventAction;
+
 
     /**
      * Creates new form EmployeeManager2
@@ -45,26 +42,7 @@ public class EmployeeManager extends javax.swing.JPanel {
     
     public void init() {
         
-        eventAction = new EventAction() {
-            @Override
-            public void delete() {
-                if (showMessage("Delete Row  : " + tblEmployee.getValueAt(tblEmployee.getSelectedRow(), 1))) {
-                    EmployeeManager.this.delete();
-                } else {
-                    
-                }
-            }
-            
-            @Override
-            public void update() {
-                //System.out.println("update" + tblEmployee.getValueAt(tblEmployee.getSelectedRow(),1));
-                EmployeeManager.this.currentIndex = tblEmployee.getSelectedRow();
-                EmployeeManager.this.edit();
-                isUpdate(true);
-            }
-        };
-        data = new ModelAction(eventAction);
-        
+     
         tblEmployee.fixTable(jScrollPane2);
         tblModel = (DefaultTableModel) tblEmployee.getModel();
         tblEmployee.setAutoscrolls(true);
@@ -73,11 +51,6 @@ public class EmployeeManager extends javax.swing.JPanel {
         
     }
     
-    private boolean showMessage(String message) {
-        Message obj = new Message(EdusysApp.getFrames()[0], true);
-        obj.showMessage(message);
-        return obj.isOk();
-    }
     
     void loadEmployee() {
         listAllEmployee = dao.select();
@@ -109,7 +82,7 @@ public class EmployeeManager extends javax.swing.JPanel {
                     emp.getPassword(),
                     emp.getName(),
                     emp.isLore() ? "Trưởng phòng" : "Nhân viên",
-                    data
+                 
                 };
                 tblModel.addRow(row);
             }
@@ -117,24 +90,24 @@ public class EmployeeManager extends javax.swing.JPanel {
             DialogHelper.alertError(this, "Lỗi truy vấn dữ liệu!");
         }
     }
-    
-    void load() {
-        tblModel.setRowCount(0);
-        try {
-            List<Employee> list = dao.select();
-            for (Employee emp : list) {
-                Object[] row = {
-                    emp.getEmpID(),
-                    emp.getPassword(),
-                    emp.getName(),
-                    emp.isLore() ? "Trưởng phòng" : "Nhân viên"
-                };
-                tblModel.addRow(row);
-            }
-        } catch (Exception e) {
-            DialogHelper.alertError(this, "Có lỗi xảy ra. Vui lòng liên hệ với kỹ thuật hỗ trợ!");
-        }
-    }
+//    
+//    void load() {
+//        tblModel.setRowCount(0);
+//        try {
+//            List<Employee> list = dao.select();
+//            for (Employee emp : list) {
+//                Object[] row = {
+//                    emp.getEmpID(),
+//                    emp.getPassword(),
+//                    emp.getName(),
+//                    emp.isLore() ? "Trưởng phòng" : "Nhân viên"
+//                };
+//                tblModel.addRow(row);
+//            }
+//        } catch (Exception e) {
+//            DialogHelper.alertError(this, "Có lỗi xảy ra. Vui lòng liên hệ với kỹ thuật hỗ trợ!");
+//        }
+//    }
     
     void insert() {
         Employee model = getModel();
@@ -142,7 +115,7 @@ public class EmployeeManager extends javax.swing.JPanel {
         if (confirm.equals(model.getPassword())) {
             try {
                 boolean rs = dao.insert(model);
-                this.load();
+                this.fillTable(listAllEmployee);
                 this.clear();
                 DialogHelper.alert(this, "Thêm mới thành công!");
             } catch (Exception e) {
@@ -195,7 +168,7 @@ public class EmployeeManager extends javax.swing.JPanel {
             String manv = txtMaNV.getText();
             try {
                 dao.delete(manv);
-                this.load();
+                this.fillTable(listAllEmployee);
                 this.clear();
                 DialogHelper.alert(this, "Xóa thành công!");
             } catch (Exception e) {
@@ -213,7 +186,8 @@ public class EmployeeManager extends javax.swing.JPanel {
             try {
                 
                 dao.update(model);
-                this.load();
+                this.fillTable(listAllEmployee);
+                clear();
                 DialogHelper.alert(this, "Cập nhật thành công!");
             } catch (Exception e) {
                 DialogHelper.alertError(this, "Cập nhật thất bại!");
@@ -237,6 +211,7 @@ public class EmployeeManager extends javax.swing.JPanel {
         btnInsert.setVisible(false);
         // btnUpdate.setEnabled(false);
         btnUpdate.setVisible(false);
+          btnDelete.setVisible(false);
         
         boolean first = this.currentIndex > 0;
         boolean last = this.currentIndex < tblEmployee.getRowCount() - 1;
@@ -252,16 +227,11 @@ public class EmployeeManager extends javax.swing.JPanel {
         txtComfirmPass.setEnabled(is);
         txtPass.setEditable(is);
 
-//        btnUpdate.setEnabled(true);
-        //btnInsert.setVisible(is);
-        btnUpdate.setVisible(is);
 
-        //boolean first = this.currentIndex > 0;
-        // boolean last = this.currentIndex < tblEmployee.getRowCount() - 1;
-//        btnFirst.setEnabled(false);
-//        btnPrev.setEnabled(false);
-//        btnLast.setEnabled(false);
-//        btnNext.setEnabled(false);
+        btnUpdate.setVisible(is);
+        btnDelete.setVisible(true);
+
+
     }
     
     void isInsert(boolean is) {
@@ -272,8 +242,8 @@ public class EmployeeManager extends javax.swing.JPanel {
         
         btnInsert.setVisible(true);
         btnUpdate.setVisible(false);
-        boolean first = this.currentIndex > 0;
-        boolean last = this.currentIndex < tblEmployee.getRowCount() - 1;
+          btnDelete.setVisible(true);
+     
         btnFirst.setEnabled(false);
         btnPrev.setEnabled(false);
         btnLast.setEnabled(false);
@@ -296,13 +266,12 @@ public class EmployeeManager extends javax.swing.JPanel {
         btnNext = new javax.swing.JButton();
         btnLast = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        tblEmployee = new com.raven.swing.table.Table();
+        tblEmployee = new com.ui.swing.table.Table();
         txtSearch = new javax.swing.JTextField();
-        jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        btnInsert = new com.raven.swing.HoverButton();
-        btnNew = new com.raven.swing.HoverButton();
-        btnUpdate = new com.raven.swing.HoverButton();
+        btnInsert = new com.ui.swing.HoverButton();
+        btnNew = new com.ui.swing.HoverButton();
+        btnUpdate = new com.ui.swing.HoverButton();
         txtMaNV = new javax.swing.JTextField();
         jLabel25 = new javax.swing.JLabel();
         jLabel27 = new javax.swing.JLabel();
@@ -314,6 +283,7 @@ public class EmployeeManager extends javax.swing.JPanel {
         jLabel29 = new javax.swing.JLabel();
         rdbAdmin = new javax.swing.JRadioButton();
         rdbEmployee = new javax.swing.JRadioButton();
+        btnDelete = new com.ui.swing.HoverButton();
 
         setPreferredSize(new java.awt.Dimension(1600, 838));
 
@@ -374,11 +344,11 @@ public class EmployeeManager extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Mã NV", "Họ Tên", "Mật Khẩu", "Vai Trò", "Tùy chọn"
+                "Mã NV", "Họ Tên", "Mật Khẩu", "Vai Trò"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -406,11 +376,9 @@ public class EmployeeManager extends javax.swing.JPanel {
             }
         });
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-
         jLabel1.setBackground(new java.awt.Color(204, 204, 255));
         jLabel1.setForeground(new java.awt.Color(102, 0, 255));
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/raven/icon/3.png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/edusys/assets/Search.png"))); // NOI18N
         jLabel1.setAutoscrolls(true);
 
         btnInsert.setText("Thêm");
@@ -498,105 +466,110 @@ public class EmployeeManager extends javax.swing.JPanel {
             }
         });
 
+        btnDelete.setText("Xóa");
+        btnDelete.setBorderColor(new java.awt.Color(255, 255, 255));
+        btnDelete.setColor(new java.awt.Color(255, 204, 204));
+        btnDelete.setColorClick(new java.awt.Color(255, 51, 0));
+        btnDelete.setColorOver(new java.awt.Color(255, 51, 0));
+        btnDelete.setLabelColor(new java.awt.Color(0, 0, 0));
+        btnDelete.setLableColorClick(java.awt.Color.white);
+        btnDelete.setRadius(12);
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlUpdate3Layout = new javax.swing.GroupLayout(pnlUpdate3);
         pnlUpdate3.setLayout(pnlUpdate3Layout);
         pnlUpdate3Layout.setHorizontalGroup(
             pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlUpdate3Layout.createSequentialGroup()
+                .addGap(380, 380, 380)
+                .addComponent(jLabel1)
+                .addGap(20, 20, 20)
+                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 388, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(pnlUpdate3Layout.createSequentialGroup()
+                .addGap(10, 10, 10)
                 .addGroup(pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtMaNV, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel27, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPass, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel28, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtComfirmPass, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel30, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel29, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(pnlUpdate3Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(rdbAdmin)
+                        .addGap(21, 21, 21)
+                        .addComponent(rdbEmployee))
                     .addGroup(pnlUpdate3Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel28, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel29, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(pnlUpdate3Layout.createSequentialGroup()
-                                .addComponent(rdbAdmin)
-                                .addGap(18, 18, 18)
-                                .addComponent(rdbEmployee))
-                            .addComponent(jLabel30, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(txtMaNV, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel25, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE))
-                            .addComponent(jLabel27, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtPass, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
-                            .addComponent(txtComfirmPass)
-                            .addComponent(txtName)))
-                    .addGroup(pnlUpdate3Layout.createSequentialGroup()
-                        .addGap(89, 89, 89)
-                        .addComponent(btnFirst, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnPrev, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(9, 9, 9)
-                        .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnLast, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnlUpdate3Layout.createSequentialGroup()
-                        .addContainerGap()
                         .addComponent(btnInsert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(5, 5, 5)
                         .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(5, 5, 5)
-                        .addComponent(btnNew, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(25, 25, 25)
-                .addGroup(pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(7, 7, 7)
+                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(15, 15, 15)
+                        .addComponent(btnNew, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnlUpdate3Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 388, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1137, Short.MAX_VALUE))
-                .addGap(23, 23, 23))
+                        .addGap(80, 80, 80)
+                        .addComponent(btnFirst, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(8, 8, 8)
+                        .addComponent(btnPrev, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(8, 8, 8)
+                        .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(8, 8, 8)
+                        .addComponent(btnLast, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(30, 30, 30)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1200, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         pnlUpdate3Layout.setVerticalGroup(
             pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlUpdate3Layout.createSequentialGroup()
-                .addGap(36, 36, 36)
-                .addGroup(pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtSearch)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE))
+                .addGap(10, 10, 10)
+                .addGroup(pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(37, 37, 37)
                 .addGroup(pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlUpdate3Layout.createSequentialGroup()
-                        .addGap(37, 37, 37)
+                        .addGap(10, 10, 10)
                         .addComponent(jLabel25)
                         .addGap(4, 4, 4)
                         .addComponent(txtMaNV, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addGap(20, 20, 20)
                         .addComponent(jLabel27)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(4, 4, 4)
                         .addComponent(txtPass, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel28)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(4, 4, 4)
                         .addComponent(txtComfirmPass, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel30)
                         .addGap(4, 4, 4)
                         .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addGap(20, 20, 20)
                         .addComponent(jLabel29)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(rdbEmployee, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(rdbAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                        .addGap(14, 14, 14)
+                        .addGroup(pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(rdbAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(rdbEmployee, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(9, 9, 9)
                         .addGroup(pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnInsert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnNew, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(67, 67, 67)
-                        .addGroup(pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnFirst, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnPrev, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnNext, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnLast, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(147, 147, 147)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnlUpdate3Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE)))
-                .addGap(51, 51, 51))
+                        .addGap(75, 75, 75)
+                        .addGroup(pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnFirst, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnPrev, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnLast, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 700, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -608,31 +581,70 @@ public class EmployeeManager extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(pnlUpdate3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(0, 0, 0))
+                .addComponent(pnlUpdate3, javax.swing.GroupLayout.PREFERRED_SIZE, 825, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFirstActionPerformed
-        currentIndex = 0;
-        setTblSelected(currentIndex);
-        isUpdate(false);
-        edit();
-    }//GEN-LAST:event_btnFirstActionPerformed
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        delete();
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
-    private void btnPrevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrevActionPerformed
-        currentIndex--;
-        setTblSelected(currentIndex);
-        isUpdate(false);
-        edit();
-    }//GEN-LAST:event_btnPrevActionPerformed
+    private void rdbEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdbEmployeeActionPerformed
 
-    private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
-        currentIndex++;
-        setTblSelected(currentIndex);
-        isUpdate(false);
-        edit();
-    }//GEN-LAST:event_btnNextActionPerformed
+    }//GEN-LAST:event_rdbEmployeeActionPerformed
+
+    private void rdbAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdbAdminActionPerformed
+
+    }//GEN-LAST:event_rdbAdminActionPerformed
+
+    private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
+
+    }//GEN-LAST:event_txtNameActionPerformed
+
+    private void txtPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPassActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPassActionPerformed
+
+    private void txtMaNVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMaNVActionPerformed
+
+    }//GEN-LAST:event_txtMaNVActionPerformed
+
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        isUpdate(true);
+        update();
+        isView(true);
+    }//GEN-LAST:event_btnUpdateActionPerformed
+
+    private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
+        clear();
+        isInsert(true);
+    }//GEN-LAST:event_btnNewActionPerformed
+
+    private void btnInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertActionPerformed
+        insert();
+        isView(true);
+    }//GEN-LAST:event_btnInsertActionPerformed
+
+    private void txtSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyReleased
+        filtEmployee(txtSearch.getText());
+    }//GEN-LAST:event_txtSearchKeyReleased
+
+    private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSearchActionPerformed
+
+    private void tblEmployeeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblEmployeeMouseClicked
+        currentIndex = tblEmployee.rowAtPoint(evt.getPoint());
+
+        if (this.currentIndex >= 0) {
+            this.edit();
+            if (evt.getClickCount() == 2) {
+                isUpdate(true);
+
+            }
+        }
+    }//GEN-LAST:event_tblEmployeeMouseClicked
 
     private void btnLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLastActionPerformed
         currentIndex = tblEmployee.getRowCount() - 1;
@@ -641,72 +653,37 @@ public class EmployeeManager extends javax.swing.JPanel {
         edit();
     }//GEN-LAST:event_btnLastActionPerformed
 
-    private void tblEmployeeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblEmployeeMouseClicked
-        currentIndex = tblEmployee.rowAtPoint(evt.getPoint());
-        
-        if (this.currentIndex >= 0) {
-            this.edit();
-            if (evt.getClickCount() == 2) {
-                isUpdate(true);
-                
-            }
-        }
+    private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
+        currentIndex++;
+        setTblSelected(currentIndex);
+        isUpdate(false);
+        edit();
+    }//GEN-LAST:event_btnNextActionPerformed
 
-    }//GEN-LAST:event_tblEmployeeMouseClicked
+    private void btnPrevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrevActionPerformed
+        currentIndex--;
+        setTblSelected(currentIndex);
+        isUpdate(false);
+        edit();
+    }//GEN-LAST:event_btnPrevActionPerformed
 
-    private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtSearchActionPerformed
-
-    private void txtSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyReleased
-        filtEmployee(txtSearch.getText());
-    }//GEN-LAST:event_txtSearchKeyReleased
-
-    private void btnInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertActionPerformed
-        insert();
-        isView(true);
-    }//GEN-LAST:event_btnInsertActionPerformed
-
-    private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
-        clear();
-        isInsert(true);
-    }//GEN-LAST:event_btnNewActionPerformed
-
-    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        isUpdate(true);
-        update();
-        isView(true);
-    }//GEN-LAST:event_btnUpdateActionPerformed
-
-    private void txtMaNVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMaNVActionPerformed
-
-    }//GEN-LAST:event_txtMaNVActionPerformed
-
-    private void txtPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPassActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtPassActionPerformed
-
-    private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
-
-    }//GEN-LAST:event_txtNameActionPerformed
-
-    private void rdbAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdbAdminActionPerformed
-
-    }//GEN-LAST:event_rdbAdminActionPerformed
-
-    private void rdbEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdbEmployeeActionPerformed
-
-    }//GEN-LAST:event_rdbEmployeeActionPerformed
+    private void btnFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFirstActionPerformed
+        currentIndex = 0;
+        setTblSelected(currentIndex);
+        isUpdate(false);
+        edit();
+    }//GEN-LAST:event_btnFirstActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.ui.swing.HoverButton btnDelete;
     private javax.swing.JButton btnFirst;
-    private com.raven.swing.HoverButton btnInsert;
+    private com.ui.swing.HoverButton btnInsert;
     private javax.swing.JButton btnLast;
-    private com.raven.swing.HoverButton btnNew;
+    private com.ui.swing.HoverButton btnNew;
     private javax.swing.JButton btnNext;
     private javax.swing.JButton btnPrev;
-    private com.raven.swing.HoverButton btnUpdate;
+    private com.ui.swing.HoverButton btnUpdate;
     private javax.swing.ButtonGroup btngLore;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel25;
@@ -714,12 +691,11 @@ public class EmployeeManager extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel28;
     private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel30;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPanel pnlUpdate3;
     private javax.swing.JRadioButton rdbAdmin;
     private javax.swing.JRadioButton rdbEmployee;
-    private com.raven.swing.table.Table tblEmployee;
+    private com.ui.swing.table.Table tblEmployee;
     private javax.swing.JPasswordField txtComfirmPass;
     private javax.swing.JTextField txtMaNV;
     private javax.swing.JTextField txtName;

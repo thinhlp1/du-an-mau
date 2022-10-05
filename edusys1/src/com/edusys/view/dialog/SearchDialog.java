@@ -11,7 +11,6 @@ import com.edusys.helper.AppStatus;
 import com.edusys.helper.DialogHelper;
 import com.edusys.model.Learner;
 import com.edusys.model.Traineer;
-import com.edusys.view.manager.LearnerManager3;
 import com.edusys.view.manager.TraineerManager;
 import java.util.ArrayList;
 import java.util.List;

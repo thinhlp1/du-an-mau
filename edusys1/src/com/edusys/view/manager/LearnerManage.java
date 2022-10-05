@@ -9,20 +9,15 @@ import com.edusys.dao.LearnerDAO;
 import com.edusys.helper.AppStatus;
 import com.edusys.helper.DateHelper;
 import com.edusys.helper.DialogHelper;
-import com.edusys.helper.ShareHelper;
 import com.edusys.model.Learner;
-import com.raven.dialog.Message;
-import com.raven.main.EdusysApp;
-import com.raven.swing.InkwellButton;
-import com.raven.swing.table.Action;
-import com.raven.swing.table.EventAction;
-import com.raven.swing.table.ModelAction;
-import java.awt.Color;
+
+import com.ui.swing.datechooser.DateChooser;
+
+
 import java.awt.HeadlessException;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -32,13 +27,14 @@ import javax.swing.table.DefaultTableModel;
 public class LearnerManage extends javax.swing.JPanel {
     
     
-     private int currentIndex = 0;
+    private int currentIndex = 0;
     private LearnerDAO dao = new LearnerDAO();
-    List<Learner> listAllLearner ;
+    List<Learner> listAllLearner;
 
     private DefaultTableModel tblModel;
-    private ModelAction data;
-    EventAction eventAction;
+
+    
+    private DateChooser dtChooser = new DateChooser();
     /**
      * Creates new form LearnerManage2
      */
@@ -49,51 +45,26 @@ public class LearnerManage extends javax.swing.JPanel {
         isView(true);
     }
 
-    @Override
-    public String toString() {
-        return "";
-    }
     
     
     
     
     public void init() {
         
-        eventAction = new EventAction() {
-            @Override
-            public void delete( ) {
-                if (showMessage("Delete Row  : " + tblLearner.getValueAt(tblLearner.getSelectedRow(),1))) {
-                    LearnerManage.this.delete();
-                } else {
-                    
-                }
-            }
-
-            @Override
-            public void update( ) {
-                //System.out.println("update" + tblLearner.getValueAt(tblLearner.getSelectedRow(),1));
-                LearnerManage.this.currentIndex = tblLearner.getSelectedRow();
-                LearnerManage.this.edit();
-                isUpdate(true);
-            }
-        };
-        data = new ModelAction(eventAction);
-       
+      
         
         tblLearner.fixTable(jScrollPane2);
         tblModel = (DefaultTableModel) tblLearner.getModel();
-         tblLearner.setAutoscrolls(true);
+        tblLearner.setAutoscrolls(true);
         loadLearner();
         fillTable(listAllLearner);
+        
+        dtChooser.setTextRefernce(txtBirth);
+        
+        
+        
 
     }
-    
-     private boolean showMessage(String message) {
-        Message obj = new Message(EdusysApp.getFrames()[0], true);
-        obj.showMessage(message);
-        return obj.isOk();
-    }
-    
     
     
     void loadLearner(){
@@ -125,12 +96,12 @@ public class LearnerManage extends javax.swing.JPanel {
                     learner.getMaNH(),
                     learner.getName(),
                     learner.getGender() ? "Nam" : "Nữ",
-                    DateHelper.toString(learner.getDob()),
+                    DateHelper.toString(learner.getDob(),"dd/MM/yyyy"),
                     learner.getNumberPhone(),
                     learner.getEmail(),
                     learner.getMaNV(),
-                    DateHelper.toString(learner.getRegistDay()),
-                    data,
+                    DateHelper.toString(learner.getRegistDay(),"dd/MM/yyyy"),
+                   
                 };
                 tblModel.addRow(row);
             }
@@ -244,6 +215,8 @@ public class LearnerManage extends javax.swing.JPanel {
         cbbGender.setEnabled(false);
         txtNote.setEditable(false);
         
+          btnCalendar.setVisible(false);
+        btnDelete.setVisible(false);
        // btnInsert.setEnabled(false);
         btnInsert.setVisible(false);
        // btnUpdate.setEnabled(false);
@@ -270,7 +243,9 @@ public class LearnerManage extends javax.swing.JPanel {
         
 //        btnUpdate.setEnabled(true);
         //btnInsert.setVisible(is);
-          btnUpdate.setVisible(is);
+          btnUpdate.setVisible(true);
+          btnDelete.setVisible(true);
+            btnCalendar.setVisible(true);
         
         //boolean first = this.currentIndex > 0;
        // boolean last = this.currentIndex < tblLearner.getRowCount() - 1;
@@ -290,8 +265,11 @@ public class LearnerManage extends javax.swing.JPanel {
         cbbGender.setEnabled(is);
         txtNote.setEditable(is);
         
+        btnCalendar.setVisible(true);
+        
         btnInsert.setVisible(true);
         btnUpdate.setVisible(false);
+        btnDelete.setVisible(false);
         boolean first = this.currentIndex > 0;
         boolean last = this.currentIndex < tblLearner.getRowCount() - 1;
         btnFirst.setEnabled(false);
@@ -302,7 +280,9 @@ public class LearnerManage extends javax.swing.JPanel {
     
     
     
-    
+      public void showCalendar(){
+          dtChooser.showPopup();
+      }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -333,16 +313,19 @@ public class LearnerManage extends javax.swing.JPanel {
         jLabel27 = new javax.swing.JLabel();
         txtName = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
-        tblLearner = new com.raven.swing.table.Table();
+        tblLearner = new com.ui.swing.table.Table();
         txtSearch = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        cbbGender = new com.raven.swing.Combobox();
-        btnInsert = new com.raven.swing.HoverButton();
-        btnNew = new com.raven.swing.HoverButton();
-        btnUpdate = new com.raven.swing.HoverButton();
+        cbbGender = new com.ui.swing.Combobox();
+        btnInsert = new com.ui.swing.HoverButton();
+        btnNew = new com.ui.swing.HoverButton();
+        btnUpdate = new com.ui.swing.HoverButton();
+        btnCalendar = new javax.swing.JButton();
+        btnDelete = new com.ui.swing.HoverButton();
 
         pnlUpdate3.setBackground(new java.awt.Color(255, 255, 255));
+        pnlUpdate3.setPreferredSize(new java.awt.Dimension(1602, 7));
 
         jLabel5.setText("Ghi chú");
 
@@ -415,11 +398,11 @@ public class LearnerManage extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Mã NH", "Họ Tên", "Giới tính", "Ngày sinh", "Điện thoại", "Email", "Mã NV", "Ngày Đk", "Tùy chọn"
+                "Mã NH", "Họ Tên", "Giới tính", "Ngày sinh", "Điện thoại", "Email", "Mã NV", "Ngày Đk"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, true
+                false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -451,7 +434,7 @@ public class LearnerManage extends javax.swing.JPanel {
 
         jLabel1.setBackground(new java.awt.Color(204, 204, 255));
         jLabel1.setForeground(new java.awt.Color(102, 0, 255));
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/raven/icon/3.png"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/edusys/assets/Search.png"))); // NOI18N
         jLabel1.setAutoscrolls(true);
 
         cbbGender.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Nam", "Nữ" }));
@@ -491,9 +474,9 @@ public class LearnerManage extends javax.swing.JPanel {
 
         btnUpdate.setText("Lưu");
         btnUpdate.setBorderColor(new java.awt.Color(255, 255, 255));
-        btnUpdate.setColor(new java.awt.Color(255, 204, 204));
-        btnUpdate.setColorClick(new java.awt.Color(255, 51, 0));
-        btnUpdate.setColorOver(new java.awt.Color(255, 51, 0));
+        btnUpdate.setColor(new java.awt.Color(204, 255, 204));
+        btnUpdate.setColorClick(new java.awt.Color(0, 255, 0));
+        btnUpdate.setColorOver(new java.awt.Color(51, 255, 51));
         btnUpdate.setLabelColor(new java.awt.Color(0, 0, 0));
         btnUpdate.setLableColorClick(java.awt.Color.white);
         btnUpdate.setRadius(12);
@@ -503,12 +486,43 @@ public class LearnerManage extends javax.swing.JPanel {
             }
         });
 
+        btnCalendar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/edusys/assets/Calendar.png"))); // NOI18N
+        btnCalendar.setContentAreaFilled(false);
+        btnCalendar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCalendarActionPerformed(evt);
+            }
+        });
+
+        btnDelete.setText("Xóa");
+        btnDelete.setBorderColor(new java.awt.Color(255, 255, 255));
+        btnDelete.setColor(new java.awt.Color(255, 204, 204));
+        btnDelete.setColorClick(new java.awt.Color(255, 51, 0));
+        btnDelete.setColorOver(new java.awt.Color(255, 51, 0));
+        btnDelete.setLabelColor(new java.awt.Color(0, 0, 0));
+        btnDelete.setLableColorClick(java.awt.Color.white);
+        btnDelete.setRadius(12);
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlUpdate3Layout = new javax.swing.GroupLayout(pnlUpdate3);
         pnlUpdate3.setLayout(pnlUpdate3Layout);
         pnlUpdate3Layout.setHorizontalGroup(
             pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlUpdate3Layout.createSequentialGroup()
                 .addGroup(pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel5)
+                        .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(pnlUpdate3Layout.createSequentialGroup()
+                            .addComponent(btnInsert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(5, 5, 5)
+                            .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(pnlUpdate3Layout.createSequentialGroup()
                         .addGroup(pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(pnlUpdate3Layout.createSequentialGroup()
@@ -517,40 +531,36 @@ public class LearnerManage extends javax.swing.JPanel {
                                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(pnlUpdate3Layout.createSequentialGroup()
                                         .addGap(10, 10, 10)
-                                        .addGroup(pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                             .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(txtMaNH, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(jLabel27, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
                                             .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(txtBirth, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(txtEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
                                             .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(txtNumberPhone, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(txtNumberPhone, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
                                             .addComponent(jLabel26, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(cbbGender, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                            .addComponent(cbbGender, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGroup(pnlUpdate3Layout.createSequentialGroup()
+                                                .addComponent(txtBirth, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(btnCalendar, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))
+                                            .addComponent(txtMaNH)))))
                             .addGroup(pnlUpdate3Layout.createSequentialGroup()
                                 .addGap(55, 55, 55)
-                                .addComponent(btnFirst, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnPrev, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(9, 9, 9)
-                                .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnLast, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(30, 30, 30))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlUpdate3Layout.createSequentialGroup()
-                        .addGroup(pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
-                            .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(pnlUpdate3Layout.createSequentialGroup()
-                                .addComponent(btnInsert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(5, 5, 5)
-                                .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(5, 5, 5)
-                                .addComponent(btnNew, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)))
+                                .addGroup(pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(btnNew, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(pnlUpdate3Layout.createSequentialGroup()
+                                        .addComponent(btnFirst, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnPrev, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(9, 9, 9)
+                                        .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnLast, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGap(13, 13, 13)))
+                .addGap(18, 18, 18)
                 .addGroup(pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlUpdate3Layout.createSequentialGroup()
                         .addGap(8, 8, 8)
@@ -558,19 +568,18 @@ public class LearnerManage extends javax.swing.JPanel {
                         .addGap(18, 18, 18)
                         .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 388, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1180, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
         pnlUpdate3Layout.setVerticalGroup(
             pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlUpdate3Layout.createSequentialGroup()
-                .addGap(36, 36, 36)
+                .addGap(15, 15, 15)
                 .addGroup(pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txtSearch)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlUpdate3Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
+                        .addGap(23, 23, 23)
                         .addComponent(jLabel25)
                         .addGap(4, 4, 4)
                         .addComponent(txtMaNH, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -581,7 +590,9 @@ public class LearnerManage extends javax.swing.JPanel {
                         .addGap(20, 20, 20)
                         .addComponent(jLabel24)
                         .addGap(4, 4, 4)
-                        .addComponent(txtBirth, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtBirth, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnCalendar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(20, 20, 20)
                         .addComponent(jLabel21)
                         .addGap(4, 4, 4)
@@ -601,8 +612,10 @@ public class LearnerManage extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnInsert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnNew, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(pnlUpdate3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnNew, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(25, 25, 25)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -611,8 +624,10 @@ public class LearnerManage extends javax.swing.JPanel {
                             .addComponent(btnPrev, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnNext, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnLast, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE))
-                .addGap(42, 42, 42))
+                    .addGroup(pnlUpdate3Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 683, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(35, 35, 35))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -623,7 +638,7 @@ public class LearnerManage extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlUpdate3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlUpdate3, javax.swing.GroupLayout.DEFAULT_SIZE, 779, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -700,19 +715,29 @@ public class LearnerManage extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_cbbGenderActionPerformed
 
+    private void btnCalendarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalendarActionPerformed
+        showCalendar();
+    }//GEN-LAST:event_btnCalendarActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+       delete();
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
 
        
    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCalendar;
+    private com.ui.swing.HoverButton btnDelete;
     private javax.swing.JButton btnFirst;
-    private com.raven.swing.HoverButton btnInsert;
+    private com.ui.swing.HoverButton btnInsert;
     private javax.swing.JButton btnLast;
-    private com.raven.swing.HoverButton btnNew;
+    private com.ui.swing.HoverButton btnNew;
     private javax.swing.JButton btnNext;
     private javax.swing.JButton btnPrev;
-    private com.raven.swing.HoverButton btnUpdate;
-    private com.raven.swing.Combobox cbbGender;
+    private com.ui.swing.HoverButton btnUpdate;
+    private com.ui.swing.Combobox cbbGender;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel21;
@@ -725,7 +750,7 @@ public class LearnerManage extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JPanel pnlUpdate3;
-    private com.raven.swing.table.Table tblLearner;
+    private com.ui.swing.table.Table tblLearner;
     private javax.swing.JTextField txtBirth;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtMaNH;

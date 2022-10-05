@@ -40,6 +40,10 @@ public class Course {
     public String toString() {
         return maCD + " - " + DateHelper.toString(openingDay, "dd/MM/yyyy");
     }
+    
+    public String info(){
+         return maCD + " - " + DateHelper.toString(openingDay, "dd/MM/yyyy");
+    }
 
     public int getMaKH() {
         return maKH;

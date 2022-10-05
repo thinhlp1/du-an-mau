@@ -22,10 +22,11 @@ public class LearnerDAO extends EdusysDAO<Learner>{
     private final String UPDATE_LEARNER = "UPDATE NguoiHoc SET HoTen=?, NgaySinh=?, GioiTinh=?, DienThoai=?, Email=?, GhiChu=?,\n"
             + "MaNV=? WHERE MaNH=?";
     private final String DELELTE_LEARNER = "DELETE FROM NguoiHoc WHERE MaNH=?";
+    
     private final String SELECT_ALL = "SELECT * FROM NguoiHoc";
     private final String SELECT_BY_ID = "SELECT * FROM NguoiHoc WHERE MaNH=?";
     private final String SELECT_BY_NAME = "SELECT * FROM NguoiHoc WHERE HoTen LIKE ?";
-    private final String SELECT_BY_COURSE = "SELECT * FROM NguoiHoc WHERE MaNH NOT IN (SELECT MaNH FROM HocVien WHERE MaKH=?)";
+        private final String SELECT_NOTIN_COURSE = "SELECT * FROM NguoiHoc WHERE MaNH NOT IN (SELECT MaNH FROM HocVien WHERE MaKH=?)";
 
     public boolean insert(Learner learner) {
         int rs = JDBCHelper.executeUpdate(INSERT_LEARNER, learner.getMaNH(), learner.getName(), learner.getDob(),
@@ -60,9 +61,11 @@ public class LearnerDAO extends EdusysDAO<Learner>{
     }
 
     public List<Learner> selectByCourse(Integer makh) {
-        String sql = SELECT_BY_COURSE;
+        String sql = SELECT_NOTIN_COURSE;
         return select(sql, makh);
     }
+    
+  
 
     private List select(String sql, Object... args) {
         List<Learner> list = new ArrayList<>();

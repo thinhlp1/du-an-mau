@@ -484,7 +484,7 @@ public class TraineerManager extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        AppStatus.OPEN_CONTROLLER.closeOpeningWindown();
+       
     }//GEN-LAST:event_formWindowClosing
 
     /**
